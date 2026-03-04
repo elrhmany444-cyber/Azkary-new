@@ -1,7 +1,6 @@
 <!DOCTYPE html>
 <html lang="ar" dir="rtl">
 <head>
-  <!-- Google tag (gtag.js) -->
 <script async src="https://www.googletagmanager.com/gtag/js?id=G-48XJWTF977"></script>
 <script>
   window.dataLayer = window.dataLayer || [];
@@ -12,939 +11,680 @@
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 <title>أذكاري</title>
-
-<link href="https://fonts.googleapis.com/css2?family=Cairo:wght@400;600;800&display=swap" rel="stylesheet">
+<link href="https://fonts.googleapis.com/css2?family=Cairo:wght@300;400;600;700;800;900&display=swap" rel="stylesheet">
 
 <style>
-*{margin:0;padding:0;box-sizing:border-box;font-family:'Cairo',sans-serif}
-
+:root{
+  --gold:#f0c040;--gold-d:#c9922a;--gold-l:#fde99a;
+  --navy:#07122b;
+  --card-bg:rgba(255,255,255,.10);
+  --card-b:rgba(255,255,255,.18);
+  --text:#f0ede6;--text-m:rgba(240,237,230,.60);
+  --r:24px;--sh:0 20px 60px rgba(0,0,0,.55);
+}
+*,*::before,*::after{margin:0;padding:0;box-sizing:border-box;}
 body{
-  min-height:110vh;
-  color:white;
-  display:flex;
-  flex-direction:column;
-  align-items:center;
-  padding:20px;
-  overflow-x:hidden;
-  /* background removed — canvas handles it */
+  font-family:'Cairo',sans-serif;color:var(--text);
+  min-height:100vh;display:flex;flex-direction:column;
+  align-items:center;padding:28px 16px 185px;overflow-x:hidden;
 }
 
+/* ── Cards ── */
 .card{
-  background:rgba(255,255,255,.12);
-  backdrop-filter:blur(15px);
-  padding:20px;
-  border-radius:20px;
-  width:100%;
-  max-width:420px;
-  margin-bottom:20px;
-  box-shadow:0 15px 30px rgba(0,0,0,.4);
+  background:var(--card-bg);
+  backdrop-filter:blur(26px) saturate(150%);
+  -webkit-backdrop-filter:blur(26px) saturate(150%);
+  border:1px solid var(--card-b);
+  border-radius:var(--r);
+  width:100%;max-width:440px;
+  margin-bottom:22px;
+  box-shadow:var(--sh),inset 0 1px 0 rgba(255,255,255,.14);
+  animation:up .65s cubic-bezier(.22,.68,0,1.2) both;overflow:hidden;
 }
+.card:nth-child(2){animation-delay:.1s}
+.card:nth-child(3){animation-delay:.2s}
+@keyframes up{
+  from{opacity:0;transform:translateY(30px) scale(.97)}
+  to  {opacity:1;transform:translateY(0)    scale(1)}
+}
+.card-hdr{padding:20px 22px 0;display:flex;align-items:center;gap:10px}
+.card-hdr .ico{font-size:26px;filter:drop-shadow(0 2px 8px rgba(240,192,64,.5))}
+.card-hdr h2{font-size:20px;font-weight:800;letter-spacing:.3px}
+.card-body{padding:16px 22px 22px}
 
-h2{text-align:center;margin-bottom:10px;font-weight:800}
-
+/* ── Prayer Times ── */
 .location{
-  text-align:center;
-  font-size:14px;
-  margin-bottom:10px;
-  color:#f4d03f;
+  text-align:center;font-size:13px;font-weight:600;
+  color:var(--gold);margin-bottom:14px;
+  display:flex;align-items:center;justify-content:center;gap:5px;
+}
+.location::before{content:"📍";font-size:13px}
+.cbar{
+  background:linear-gradient(135deg,var(--gold-d),var(--gold),var(--gold-l));
+  color:var(--navy);padding:11px 16px;border-radius:14px;
+  text-align:center;font-weight:800;font-size:15px;margin-bottom:18px;
+  box-shadow:0 4px 20px rgba(240,192,64,.35);letter-spacing:.4px;
+}
+.prayer-list{display:flex;flex-direction:column;gap:6px}
+.prayer-row{
+  display:flex;justify-content:space-between;align-items:center;
+  padding:10px 14px;border-radius:14px;
+  background:rgba(255,255,255,.05);border:1px solid rgba(255,255,255,.07);
+  font-size:15px;font-weight:600;transition:all .3s;
+}
+.prayer-row.active{
+  background:linear-gradient(135deg,rgba(240,192,64,.22),rgba(201,146,42,.16));
+  border-color:rgba(240,192,64,.45);
+  box-shadow:0 0 18px rgba(240,192,64,.18);
+}
+.prayer-row.active .pname{color:var(--gold)}
+.prayer-row.active .ptime{color:var(--gold-l);font-weight:800}
+.pname{display:flex;align-items:center;gap:7px}
+.pip{width:7px;height:7px;border-radius:50%;background:rgba(255,255,255,.22)}
+.prayer-row.active .pip{background:var(--gold);box-shadow:0 0 6px var(--gold)}
+
+/* ── Player ── */
+.player-selects{display:flex;flex-direction:column;gap:10px;margin-bottom:16px}
+.styled-select{position:relative}
+.styled-select select{
+  width:100%;padding:12px 16px;
+  background:rgba(255,255,255,.08);
+  border:1px solid rgba(255,255,255,.15);border-radius:14px;
+  color:var(--text);font-family:'Cairo',sans-serif;font-size:14px;font-weight:600;
+  appearance:none;cursor:pointer;outline:none;
+  transition:border-color .2s,background .2s;
+}
+.styled-select select:focus{border-color:var(--gold);background:rgba(240,192,64,.08)}
+.styled-select select option{background:#1a2a50;color:#fff}
+.styled-select::after{
+  content:"▾";position:absolute;left:14px;top:50%;transform:translateY(-50%);
+  color:var(--gold);pointer-events:none;font-size:14px;
+}
+.now-playing{
+  background:linear-gradient(135deg,rgba(240,192,64,.12),rgba(7,18,43,.4));
+  border:1px solid rgba(240,192,64,.2);border-radius:16px;
+  padding:14px 16px;margin-bottom:14px;
+  display:flex;align-items:center;gap:12px;
+}
+.np-icon{
+  width:48px;height:48px;border-radius:12px;flex-shrink:0;
+  background:linear-gradient(135deg,var(--gold-d),var(--gold));
+  display:flex;align-items:center;justify-content:center;font-size:24px;
+  box-shadow:0 4px 14px rgba(240,192,64,.4);
+}
+.np-info{flex:1;min-width:0}
+.np-surah{font-size:15px;font-weight:800;color:var(--gold-l);white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+.np-rec{font-size:12px;color:var(--text-m);margin-top:2px}
+.ctrl-row{display:flex;align-items:center;justify-content:center;gap:14px;margin-bottom:14px}
+.cbtn{
+  background:rgba(255,255,255,.08);border:1px solid rgba(255,255,255,.12);
+  border-radius:50%;color:var(--text);cursor:pointer;
+  display:flex;align-items:center;justify-content:center;
+  transition:all .2s;font-size:16px;font-family:'Cairo',sans-serif;
+}
+.cbtn:hover{background:rgba(255,255,255,.15);transform:scale(1.07)}
+.cbtn:active{transform:scale(.92)}
+.cbtn.sm{width:42px;height:42px;font-size:15px}
+.cbtn.lg{
+  width:58px;height:58px;font-size:22px;
+  background:linear-gradient(135deg,var(--gold-d),var(--gold));
+  border-color:transparent;color:var(--navy);
+  box-shadow:0 6px 24px rgba(240,192,64,.45);
+}
+.cbtn.lg:hover{box-shadow:0 8px 32px rgba(240,192,64,.6)}
+.prog-track{
+  width:100%;height:5px;background:rgba(255,255,255,.15);
+  border-radius:10px;cursor:pointer;overflow:hidden;margin-bottom:6px;
+}
+.prog-fill{
+  height:100%;width:0%;
+  background:linear-gradient(90deg,var(--gold-d),var(--gold));
+  border-radius:10px;transition:width .15s linear;
+}
+.time-row{
+  display:flex;justify-content:space-between;
+  font-size:12px;color:var(--text-m);
+  font-variant-numeric:tabular-nums;
 }
 
-.countdown-bar{
-  background:linear-gradient(45deg,#c9a227,#f4d03f);
-  color:#0a1f44;
-  padding:10px;
-  border-radius:15px;
-  text-align:center;
-  font-weight:700;
-  margin-bottom:15px;
-}
-
-.prayer-time{
-  display:flex;
-  justify-content:space-between;
-  margin:8px 0;
-  font-weight:600;
-}
-
-select,button{
-  width:100%;
-  padding:12px;
-  margin-top:10px;
-  border:none;
-  border-radius:12px;
-  font-size:15px;
-  font-weight:600;
-}
-
-button{
-  background:linear-gradient(45deg,#c9a227,#f4d03f);
-  color:#0a1f44;
-  cursor:pointer;
-}
-
-.custom-player{margin-top:15px}
-
-.progress-container{
-  width:100%;
-  height:8px;
-  background:rgba(255,255,255,.3);
-  border-radius:20px;
-  cursor:pointer;
-  overflow:hidden;
-}
-
-.progress{
-  height:100%;
-  width:0%;
-  background:linear-gradient(90deg,#f4d03f,#c9a227);
-  transition:.2s;
-}
-
-.time{
-  display:flex;
-  justify-content:space-between;
-  font-size:13px;
-  margin-top:6px;
-  opacity:.8;
-}
-
-/* سبحة */
+/* ── Tasbeeh ── */
 .tasbeeh-wrapper{
-  position:fixed;
-  bottom:30px;
-  left:50%;
-  transform:translateX(-50%);
-  display:flex;
-  flex-direction:column;
-  align-items:center;
+  position:fixed;bottom:26px;left:50%;transform:translateX(-50%);
+  display:flex;flex-direction:column;align-items:center;z-index:100;
 }
-
+.tasbeeh-meta{display:flex;align-items:center;gap:10px;margin-bottom:12px}
 .tasbeeh-count{
-  background:#c9a227;
-  color:#0a1f44;
-  padding:6px 18px;
-  border-radius:20px;
-  margin-bottom:12px;
-  font-weight:800;
+  background:linear-gradient(135deg,var(--gold-d),var(--gold));
+  color:var(--navy);padding:6px 22px;border-radius:20px;
+  font-weight:900;font-size:18px;min-width:72px;text-align:center;
+  box-shadow:0 4px 16px rgba(240,192,64,.45);letter-spacing:1px;
 }
-
+.tasbeeh-reset{
+  background:rgba(255,255,255,.10);border:1px solid rgba(255,255,255,.18);
+  border-radius:50%;width:32px;height:32px;
+  display:flex;align-items:center;justify-content:center;
+  cursor:pointer;font-size:15px;color:var(--text-m);transition:all .2s;
+}
+.tasbeeh-reset:hover{color:var(--text);background:rgba(255,255,255,.18)}
+.tasbeeh-outer{
+  position:relative;width:140px;height:140px;
+  display:flex;align-items:center;justify-content:center;
+}
+.ring{position:absolute;border-radius:50%;border-style:solid;border-color:transparent}
+.ring-1{width:140px;height:140px;border-width:2px;border-top-color:rgba(240,192,64,.75);border-right-color:rgba(240,192,64,.3);animation:sp 8s linear infinite}
+.ring-2{width:120px;height:120px;border-width:2px;border-bottom-color:rgba(240,192,64,.5);border-left-color:rgba(240,192,64,.2);animation:sp 12s linear infinite reverse}
+.ring-3{width:100px;height:100px;border-width:1px;border-top-color:rgba(255,255,255,.25);border-right-color:rgba(255,255,255,.1);animation:sp 6s linear infinite}
+@keyframes sp{from{transform:rotate(0)}to{transform:rotate(360deg)}}
 .tasbeeh-btn{
-  width:110px;
-  height:110px;
-  border-radius:50%;
-  background:radial-gradient(circle at center,#f4d03f 30%,#c9a227 70%);
-  display:flex;
-  align-items:center;
-  justify-content:center;
-  font-size:58px;
-  cursor:pointer;
-  box-shadow:0 15px 30px rgba(0,0,0,.6);
-  position:relative;
+  width:84px;height:84px;border-radius:50%;
+  background:radial-gradient(circle at 38% 38%,#fde99a,var(--gold) 55%,var(--gold-d));
+  display:flex;align-items:center;justify-content:center;
+  font-size:40px;cursor:pointer;
+  box-shadow:0 8px 30px rgba(240,192,64,.55),0 0 0 3px rgba(240,192,64,.2),inset 0 1px 0 rgba(255,255,255,.4);
+  transition:transform .12s,box-shadow .12s;
+  position:relative;z-index:2;user-select:none;-webkit-user-select:none;
 }
-
-.tasbeeh-btn::before{
-  content:"";
-  position:absolute;
-  width:130px;
-  height:130px;
-  border-radius:50%;
-  border:12px dotted #f4d03f;
-  animation:rotate 15s linear infinite;
+.tasbeeh-btn:active{transform:scale(.87);box-shadow:0 3px 14px rgba(240,192,64,.4)}
+.pulse-ring{
+  position:absolute;border-radius:50%;width:84px;height:84px;
+  border:2px solid var(--gold);opacity:0;pointer-events:none;z-index:1;
 }
-
-@keyframes rotate{
-  from{transform:rotate(0)}
-  to{transform:rotate(360deg)}
+@keyframes pulseOut{0%{transform:scale(1);opacity:.8}100%{transform:scale(2.5);opacity:0}}
+.pulse-ring.pop{animation:pulseOut .5s ease-out forwards}
+.milestone-toast{
+  position:fixed;top:50%;left:50%;
+  transform:translate(-50%,-50%) scale(.8);
+  background:linear-gradient(135deg,var(--gold-d),var(--gold));
+  color:var(--navy);padding:16px 32px;border-radius:20px;
+  font-size:22px;font-weight:900;
+  box-shadow:0 10px 40px rgba(0,0,0,.5);
+  opacity:0;pointer-events:none;z-index:999;
 }
-
-.tasbeeh-btn:active{transform:scale(.92);}
+@keyframes toastPop{
+  0%  {opacity:0;transform:translate(-50%,-50%) scale(.7)}
+  20% {opacity:1;transform:translate(-50%,-50%) scale(1.05)}
+  75% {opacity:1;transform:translate(-50%,-50%) scale(1)}
+  100%{opacity:0;transform:translate(-50%,-50%) scale(.9)}
+}
+.milestone-toast.show{animation:toastPop 1.6s ease forwards}
+::-webkit-scrollbar{width:4px}
+::-webkit-scrollbar-thumb{background:rgba(240,192,64,.35);border-radius:4px}
 </style>
 </head>
-
 <body>
 
-<!-- مواقيت الصلاة -->
+<!-- Prayer Times -->
 <div class="card">
-  <h2>🕌 مواقيت الصلاة</h2>
-  <div class="location" id="locationText">جاري تحديد الموقع...</div>
-  <div class="countdown-bar" id="countdownBar">...</div>
-  <div id="prayers"></div>
+  <div class="card-hdr"><span class="ico">🕌</span><h2>مواقيت الصلاة</h2></div>
+  <div class="card-body">
+    <div class="location" id="locationText">جاري تحديد الموقع...</div>
+    <div class="cbar" id="countdownBar">...</div>
+    <div class="prayer-list" id="prayers"></div>
+  </div>
 </div>
 
-<!-- القرآن -->
+<!-- Quran Player -->
 <div class="card">
-  <h2>📖 القرآن الكريم</h2>
-  <select id="reciterSelect">
-    <option value="ar.alafasy">مشاري العفاسي</option>
-    <option value="ar.abdulbasitmurattal">عبدالباسط عبدالصمد</option>
-    <option value="ar.faresabbad">فارس عباد</option>
-  </select>
-  <select id="surahSelect"></select>
-  <button id="playBtn" onclick="togglePlay()">▶ تشغيل</button>
-  <div class="custom-player">
-    <div class="progress-container" onclick="seekAudio(event)">
-      <div class="progress" id="progressBar"></div>
+  <div class="card-hdr"><span class="ico">📖</span><h2>القرآن الكريم</h2></div>
+  <div class="card-body">
+    <div class="now-playing">
+      <div class="np-icon">🎙️</div>
+      <div class="np-info">
+        <div class="np-surah" id="npSurah">اختر سورة للتشغيل</div>
+        <div class="np-rec" id="npRec">—</div>
+      </div>
     </div>
-    <div class="time">
+    <div class="player-selects">
+      <div class="styled-select">
+        <select id="reciterSelect">
+          <option value="ar.alafasy">مشاري العفاسي</option>
+          <option value="ar.abdulbasitmurattal">عبدالباسط عبدالصمد</option>
+          <option value="ar.faresabbad">فارس عباد</option>
+        </select>
+      </div>
+      <div class="styled-select"><select id="surahSelect"></select></div>
+    </div>
+    <div class="ctrl-row">
+      <button class="cbtn sm" id="prevBtn">⏮</button>
+      <button class="cbtn lg" id="playBtn" onclick="togglePlay()">▶</button>
+      <button class="cbtn sm" id="nextBtn">⏭</button>
+    </div>
+    <div class="prog-track" id="progTrack" onclick="seekAudio(event)">
+      <div class="prog-fill" id="progressBar"></div>
+    </div>
+    <div class="time-row">
       <span id="currentTime">0:00</span>
       <span id="duration">0:00</span>
     </div>
+    <audio id="audioPlayer"></audio>
   </div>
-  <audio id="audioPlayer"></audio>
 </div>
 
-<!-- سبحة -->
+<!-- Tasbeeh -->
 <div class="tasbeeh-wrapper">
-  <div class="tasbeeh-count" id="tasbeehCount">0</div>
-  <div class="tasbeeh-btn" onclick="tasbeehClick()">📿</div>
+  <div class="tasbeeh-meta">
+    <div class="tasbeeh-count" id="tasbeehCount">0</div>
+    <div class="tasbeeh-reset" onclick="resetTasbeeh()">↺</div>
+  </div>
+  <div class="tasbeeh-outer">
+    <div class="ring ring-1"></div>
+    <div class="ring ring-2"></div>
+    <div class="ring ring-3"></div>
+    <div class="pulse-ring" id="pulseRing"></div>
+    <div class="tasbeeh-btn" onclick="tasbeehClick()">📿</div>
+  </div>
 </div>
+<div class="milestone-toast" id="milestoneToast"></div>
 
 <script>
+/* ════════════════════════════════════════
+   SKY CANVAS — Prayer-Time Driven v3
+════════════════════════════════════════ */
+(function(){
+  const cv=document.createElement("canvas");
+  cv.style.cssText="position:fixed;top:0;left:0;width:100%;height:100%;z-index:-1;pointer-events:none;";
+  document.body.insertBefore(cv,document.body.firstChild);
+  const cx=cv.getContext("2d");
+  let W,H;
 
-/* ===================================================
-   SKY CANVAS — Prayer-Time Driven
-   =================================================== */
-
-(function() {
-
-  // ---- Canvas Setup ----
-  const canvas = document.createElement("canvas");
-  canvas.style.cssText = "position:fixed;top:0;left:0;width:100%;height:100%;z-index:-1;pointer-events:none;";
-  document.body.insertBefore(canvas, document.body.firstChild);
-  const ctx = canvas.getContext("2d");
-
-  let W, H;
-  function resize() {
-    W = canvas.width = window.innerWidth;
-    H = canvas.height = window.innerHeight;
-    generateStars();
-  }
-  window.addEventListener("resize", resize);
-
-  // ---- Prayer Times Storage ----
-  // Populated once GPS + API respond; sky uses fixed hours as fallback
-  window._prayerMinutes = null; // { fajr, sunrise, dhuhr, asr, maghrib, isha } in minutes-since-midnight
-
-  // ---- Stars ----
-  let stars = [];
-  function generateStars() {
-    stars = [];
-    const count = Math.min(200, Math.floor((W * H) / 5000));
-    for (let i = 0; i < count; i++) {
+  /* Stars */
+  let stars=[];
+  function genStars(){
+    stars=[];
+    const n=Math.min(350,Math.floor(W*H/3000));
+    for(let i=0;i<n;i++){
+      const big=Math.random()>.85;
       stars.push({
-        x: Math.random() * W,
-        y: Math.random() * H * 0.75,
-        r: Math.random() * 1.4 + 0.2,
-        baseOpacity: Math.random() * 0.7 + 0.3,
-        twinkleSpeed: Math.random() * 0.02 + 0.005,
-        twinkleOffset: Math.random() * Math.PI * 2
+        x:Math.random()*W, y:Math.random()*H*.80,
+        r:big?Math.random()*.9+.9:Math.random()*.45+.15,
+        op:big?Math.random()*.4+.6:Math.random()*.5+.3,
+        ts:Math.random()*.018+.004, to:Math.random()*Math.PI*2,
+        col:Math.random()>.92?[220,220,255]:Math.random()>.88?[255,240,200]:[255,255,255]
       });
     }
   }
 
-  // ---- Shooting stars ----
-  let shootingStars = [];
-  let lastShootTime = 0;
-
-  function maybeAddShootingStar(phase, now) {
-    if (phase !== "night" && phase !== "dawn") return;
-    if (now - lastShootTime < 4000) return;
-    if (Math.random() > 0.004) return;
-    lastShootTime = now;
-    shootingStars.push({
-      x: Math.random() * W * 0.8,
-      y: Math.random() * H * 0.4,
-      len: 120 + Math.random() * 80,
-      speed: 8 + Math.random() * 6,
-      opacity: 1,
-      angle: Math.PI / 4 + (Math.random() - 0.5) * 0.3,
-      life: 1
+  /* Shooting stars */
+  let shs=[],lastS=0;
+  function maybeShoot(now){
+    if(now-lastS<3200)return;
+    if(Math.random()>.006)return;
+    lastS=now;
+    shs.push({x:Math.random()*W*.75,y:Math.random()*H*.33,
+      len:100+Math.random()*130,spd:9+Math.random()*7,
+      ang:Math.PI/4+(Math.random()-.5)*.4,
+      life:1,dec:.021+Math.random()*.009});
+  }
+  function tickShs(){
+    shs=shs.filter(s=>s.life>0);
+    shs.forEach(s=>{s.x+=Math.cos(s.ang)*s.spd;s.y+=Math.sin(s.ang)*s.spd;s.life-=s.dec;});
+  }
+  function drawShs(){
+    shs.forEach(s=>{
+      const g=cx.createLinearGradient(s.x,s.y,s.x-Math.cos(s.ang)*s.len,s.y-Math.sin(s.ang)*s.len);
+      g.addColorStop(0,`rgba(255,255,255,${s.life*.95})`);
+      g.addColorStop(.4,`rgba(200,220,255,${s.life*.4})`);
+      g.addColorStop(1,"rgba(255,255,255,0)");
+      cx.save();cx.strokeStyle=g;cx.lineWidth=1.8;
+      cx.beginPath();cx.moveTo(s.x,s.y);cx.lineTo(s.x-Math.cos(s.ang)*s.len,s.y-Math.sin(s.ang)*s.len);
+      cx.stroke();cx.restore();
     });
   }
 
-  function updateShootingStars() {
-    shootingStars = shootingStars.filter(s => s.life > 0);
-    shootingStars.forEach(s => {
-      s.x += Math.cos(s.angle) * s.speed;
-      s.y += Math.sin(s.angle) * s.speed;
-      s.life -= 0.025;
+  /* Clouds */
+  let clouds=[];
+  function mkCloud(x){
+    return{x,y:H*(.06+Math.random()*.30),puffs:3+Math.floor(Math.random()*3),
+      bR:36+Math.random()*52,spd:.06+Math.random()*.13,
+      op:.10+Math.random()*.17,spread:.5+Math.random()*.38};
+  }
+  function genClouds(){
+    clouds=[];
+    for(let i=0;i<6+Math.floor(Math.random()*3);i++) clouds.push(mkCloud(Math.random()*W*1.5));
+  }
+  function tickClouds(){
+    clouds.forEach(c=>{
+      c.x-=c.spd;
+      if(c.x+c.bR*4<0) Object.assign(c,mkCloud(W+c.bR*3));
     });
   }
-
-  function drawShootingStars() {
-    shootingStars.forEach(s => {
-      const grad = ctx.createLinearGradient(
-        s.x, s.y,
-        s.x - Math.cos(s.angle) * s.len,
-        s.y - Math.sin(s.angle) * s.len
-      );
-      grad.addColorStop(0, `rgba(255,255,255,${s.life * 0.9})`);
-      grad.addColorStop(1, "rgba(255,255,255,0)");
-      ctx.strokeStyle = grad;
-      ctx.lineWidth = 1.5;
-      ctx.beginPath();
-      ctx.moveTo(s.x, s.y);
-      ctx.lineTo(s.x - Math.cos(s.angle) * s.len, s.y - Math.sin(s.angle) * s.len);
-      ctx.stroke();
-    });
-  }
-
-  // ---- Clouds ----
-  let clouds = [];
-  function generateClouds() {
-    clouds = [];
-    const count = 4 + Math.floor(Math.random() * 3);
-    for (let i = 0; i < count; i++) {
-      clouds.push({
-        x: Math.random() * W * 1.5,
-        y: H * (0.1 + Math.random() * 0.35),
-        width: 160 + Math.random() * 200,
-        height: 40 + Math.random() * 50,
-        speed: 0.08 + Math.random() * 0.12,
-        opacity: 0.12 + Math.random() * 0.18
-      });
+  function drawCloud(c,r,g,b){
+    cx.save();cx.globalAlpha=c.op;
+    for(let i=0;i<c.puffs;i++){
+      const ox=(i-(c.puffs-1)/2)*c.bR*c.spread;
+      const oy=Math.sin(i*1.2)*c.bR*.22;
+      const pr=c.bR*(.7+Math.sin(i*2.5)*.25);
+      const gr=cx.createRadialGradient(c.x+ox,c.y+oy,0,c.x+ox,c.y+oy,pr);
+      gr.addColorStop(0,`rgba(${r},${g},${b},.9)`);
+      gr.addColorStop(.6,`rgba(${r},${g},${b},.5)`);
+      gr.addColorStop(1,`rgba(${r},${g},${b},0)`);
+      cx.fillStyle=gr;cx.beginPath();cx.ellipse(c.x+ox,c.y+oy,pr,pr*.64,0,0,Math.PI*2);cx.fill();
     }
+    cx.restore();
   }
 
-  function updateClouds() {
-    clouds.forEach(c => {
-      c.x -= c.speed;
-      if (c.x + c.width < -50) {
-        c.x = W + 50;
-        c.y = H * (0.1 + Math.random() * 0.35);
-      }
+  /* Moon */
+  function drawMoon(a){
+    if(a<=0)return;
+    const mx=W*.80,my=H*.13;
+    cx.save();cx.globalAlpha=a;
+    const halo=cx.createRadialGradient(mx,my,0,mx,my,115);
+    halo.addColorStop(0,"rgba(200,210,255,.14)");
+    halo.addColorStop(.5,"rgba(180,195,255,.05)");
+    halo.addColorStop(1,"rgba(0,0,0,0)");
+    cx.fillStyle=halo;cx.beginPath();cx.arc(mx,my,115,0,Math.PI*2);cx.fill();
+    const mg=cx.createRadialGradient(mx-9,my-9,2,mx,my,35);
+    mg.addColorStop(0,"#fff9e8");mg.addColorStop(.5,"#ede8c8");mg.addColorStop(1,"#c8c090");
+    cx.fillStyle=mg;cx.beginPath();cx.arc(mx,my,35,0,Math.PI*2);cx.fill();
+    cx.fillStyle=`rgba(2,1,18,${a*.96})`;cx.beginPath();cx.arc(mx+15,my-5,29,0,Math.PI*2);cx.fill();
+    [[mx-12,my+9,3.5],[mx+4,my-14,2.2],[mx-18,my-4,2.5]].forEach(([cx2,cy,cr])=>{
+      cx.fillStyle="rgba(140,130,100,.22)";cx.beginPath();cx.arc(cx2,cy,cr,0,Math.PI*2);cx.fill();
     });
+    cx.restore();
   }
 
-  function drawCloud(c, color) {
-    ctx.save();
-    ctx.globalAlpha = c.opacity;
-    ctx.fillStyle = color;
-    // Puff shape: 3 overlapping ellipses
-    const rx = c.width / 2, ry = c.height / 2;
-    ctx.beginPath();
-    ctx.ellipse(c.x, c.y, rx, ry, 0, 0, Math.PI * 2);
-    ctx.ellipse(c.x + rx * 0.6, c.y - ry * 0.3, rx * 0.65, ry * 0.75, 0, 0, Math.PI * 2);
-    ctx.ellipse(c.x - rx * 0.5, c.y - ry * 0.2, rx * 0.55, ry * 0.65, 0, 0, Math.PI * 2);
-    ctx.fill();
-    ctx.restore();
+  /* Sun */
+  function drawSun(x,y,r,core,glow,ga){
+    const sc=cx.createRadialGradient(x,y,r,x,y,r*7);
+    sc.addColorStop(0,`rgba(${glow},${ga*.28})`);
+    sc.addColorStop(.5,`rgba(${glow},${ga*.10})`);
+    sc.addColorStop(1,"rgba(0,0,0,0)");
+    cx.fillStyle=sc;cx.beginPath();cx.arc(x,y,r*7,0,Math.PI*2);cx.fill();
+    const bl=cx.createRadialGradient(x,y,0,x,y,r*2.6);
+    bl.addColorStop(0,`rgba(${core},1)`);
+    bl.addColorStop(.45,`rgba(${glow},.55)`);
+    bl.addColorStop(1,"rgba(0,0,0,0)");
+    cx.fillStyle=bl;cx.beginPath();cx.arc(x,y,r*2.6,0,Math.PI*2);cx.fill();
+    cx.fillStyle=`rgb(${core})`;cx.beginPath();cx.arc(x,y,r,0,Math.PI*2);cx.fill();
   }
 
-  // ---- Phase Calculation ----
-  function toMinutes(hhmm) {
-    const [h, m] = hhmm.split(":").map(Number);
-    return h * 60 + m;
+  function drawHorizon(r,g,b,s){
+    if(s<=0)return;
+    const grd=cx.createRadialGradient(W/2,H,0,W/2,H,H*.72);
+    grd.addColorStop(0,`rgba(${r},${g},${b},${s})`);
+    grd.addColorStop(1,"rgba(0,0,0,0)");
+    cx.fillStyle=grd;cx.fillRect(0,0,W,H);
   }
 
-  // Expose so getPrayerTimes can populate it
-  window._setPrayerMinutes = function(timings) {
-    // Estimate sunrise as Fajr + 60min if not provided
-    const fajr = toMinutes(timings.Fajr);
-    const sunrise = timings.Sunrise ? toMinutes(timings.Sunrise) : fajr + 65;
-    window._prayerMinutes = {
-      fajr,
-      sunrise,
-      dhuhr: toMinutes(timings.Dhuhr),
-      asr: toMinutes(timings.Asr),
-      maghrib: toMinutes(timings.Maghrib),
-      isha: toMinutes(timings.Isha)
-    };
+  /* Palettes */
+  const P={
+    night:  {t:[2,1,18],   m:[6,12,48],   b:[10,22,65]},
+    dawn_s: {t:[18,10,65], m:[90,40,100], b:[210,100,60]},
+    dawn_e: {t:[38,65,130],m:[220,130,80],b:[255,195,110]},
+    day_am: {t:[48,96,178],m:[95,155,218],b:[175,210,242]},
+    day_md: {t:[28,75,162],m:[75,140,208],b:[155,202,235]},
+    day_pm: {t:[38,88,168],m:[98,154,212],b:[188,218,242]},
+    sun_s:  {t:[48,58,128],m:[205,88,45], b:[255,165,55]},
+    sun_e:  {t:[14,14,48], m:[100,33,58], b:[195,70,28]}
   };
-
-  function getPhaseAndProgress() {
-    const now = new Date();
-    const nowM = now.getHours() * 60 + now.getMinutes() + now.getSeconds() / 60;
-
-    // Fallback: fixed hours if prayer data not yet loaded
-    const p = window._prayerMinutes || {
-      fajr: 5 * 60,
-      sunrise: 6 * 60 + 15,
-      dhuhr: 12 * 60,
-      asr: 15 * 60 + 30,
-      maghrib: 18 * 60 + 15,
-      isha: 19 * 60 + 45
-    };
-
-    // Night: Isha → Fajr (wraps midnight)
-    if (nowM >= p.isha || nowM < p.fajr) {
-      const dur = (24 * 60 - p.isha) + p.fajr;
-      const elapsed = nowM >= p.isha ? nowM - p.isha : (24 * 60 - p.isha) + nowM;
-      return { phase: "night", t: Math.min(elapsed / dur, 1) };
-    }
-
-    // Dawn: Fajr → Sunrise
-    if (nowM >= p.fajr && nowM < p.sunrise) {
-      return { phase: "dawn", t: (nowM - p.fajr) / (p.sunrise - p.fajr) };
-    }
-
-    // Sunset: Maghrib → Isha
-    if (nowM >= p.maghrib && nowM < p.isha) {
-      return { phase: "sunset", t: (nowM - p.maghrib) / (p.isha - p.maghrib) };
-    }
-
-    // Day: Sunrise → Maghrib
-    const dayDur = p.maghrib - p.sunrise;
-    return { phase: "day", t: (nowM - p.sunrise) / dayDur };
+  function lc(a,b,t){return a.map((v,i)=>Math.round(v+(b[i]-v)*t))}
+  function getColors(ph,t){
+    if(ph==="night")return P.night;
+    if(ph==="dawn")return{t:lc(P.dawn_s.t,P.dawn_e.t,t),m:lc(P.dawn_s.m,P.dawn_e.m,t),b:lc(P.dawn_s.b,P.dawn_e.b,t)};
+    if(ph==="day"){const a=t<.5?P.day_am:P.day_md,bb=t<.5?P.day_md:P.day_pm,tt=t<.5?t*2:(t-.5)*2;return{t:lc(a.t,bb.t,tt),m:lc(a.m,bb.m,tt),b:lc(a.b,bb.b,tt)};}
+    return{t:lc(P.sun_s.t,P.sun_e.t,t),m:lc(P.sun_s.m,P.sun_e.m,t),b:lc(P.sun_s.b,P.sun_e.b,t)};
+  }
+  function drawBG(c){
+    const g=cx.createLinearGradient(0,0,0,H);
+    g.addColorStop(0,`rgb(${c.t})`);g.addColorStop(.42,`rgb(${c.m})`);g.addColorStop(1,`rgb(${c.b})`);
+    cx.fillStyle=g;cx.fillRect(0,0,W,H);
   }
 
-  // ---- Color Lerp Utility ----
-  function lerpColor(c1, c2, t) {
-    return [
-      Math.round(c1[0] + (c2[0] - c1[0]) * t),
-      Math.round(c1[1] + (c2[1] - c1[1]) * t),
-      Math.round(c1[2] + (c2[2] - c1[2]) * t)
-    ];
-  }
-  function rgba(c, a) { return `rgba(${c[0]},${c[1]},${c[2]},${a})`; }
-
-  // ---- Sky Gradient Stops per Phase ----
-  const PALETTES = {
-    night: {
-      top:    [2,   1,  17],
-      mid:    [8,  15,  55],
-      bottom: [10, 30,  68]
-    },
-    dawn_start: {
-      top:    [15,  10,  60],
-      mid:    [80,  40,  90],
-      bottom: [200, 100,  60]
-    },
-    dawn_end: {
-      top:    [35,  60, 120],
-      mid:    [220, 130,  80],
-      bottom: [255, 195, 120]
-    },
-    day_morning: {
-      top:    [50,  100, 180],
-      mid:    [100, 160, 220],
-      bottom: [180, 215, 245]
-    },
-    day_midday: {
-      top:    [30,  80, 165],
-      mid:    [80, 145, 210],
-      bottom: [160, 205, 238]
-    },
-    day_afternoon: {
-      top:    [40,  90, 170],
-      mid:    [100, 158, 215],
-      bottom: [190, 220, 245]
-    },
-    sunset_start: {
-      top:    [50,  60, 130],
-      mid:    [200,  90,  50],
-      bottom: [255, 170,  60]
-    },
-    sunset_end: {
-      top:    [15,  15,  50],
-      mid:    [100,  35,  60],
-      bottom: [200,  75,  30]
-    }
+  /* Phase */
+  function toMin(s){const[h,m]=s.split(":").map(Number);return h*60+m;}
+  window._setPrayerMinutes=function(t){
+    window._pm={fajr:toMin(t.Fajr),sunrise:t.Sunrise?toMin(t.Sunrise):toMin(t.Fajr)+65,
+      maghrib:toMin(t.Maghrib),isha:toMin(t.Isha)};
   };
-
-  function getSkyColors(phase, t) {
-    if (phase === "night") return PALETTES.night;
-    if (phase === "dawn") {
-      return {
-        top:    lerpColor(PALETTES.dawn_start.top,    PALETTES.dawn_end.top,    t),
-        mid:    lerpColor(PALETTES.dawn_start.mid,    PALETTES.dawn_end.mid,    t),
-        bottom: lerpColor(PALETTES.dawn_start.bottom, PALETTES.dawn_end.bottom, t)
-      };
+  function getPhase(){
+    const now=new Date(),nm=now.getHours()*60+now.getMinutes()+now.getSeconds()/60;
+    const p=window._pm||{fajr:300,sunrise:375,maghrib:1095,isha:1185};
+    if(nm>=p.isha||nm<p.fajr){
+      const dur=(1440-p.isha)+p.fajr,el=nm>=p.isha?nm-p.isha:(1440-p.isha)+nm;
+      return{ph:"night",t:Math.min(el/dur,1)};
     }
-    if (phase === "day") {
-      const a = t < 0.5 ? PALETTES.day_morning : PALETTES.day_midday;
-      const b = t < 0.5 ? PALETTES.day_midday  : PALETTES.day_afternoon;
-      const tt = t < 0.5 ? t * 2 : (t - 0.5) * 2;
-      return {
-        top:    lerpColor(a.top,    b.top,    tt),
-        mid:    lerpColor(a.mid,    b.mid,    tt),
-        bottom: lerpColor(a.bottom, b.bottom, tt)
-      };
-    }
-    if (phase === "sunset") {
-      return {
-        top:    lerpColor(PALETTES.sunset_start.top,    PALETTES.sunset_end.top,    t),
-        mid:    lerpColor(PALETTES.sunset_start.mid,    PALETTES.sunset_end.mid,    t),
-        bottom: lerpColor(PALETTES.sunset_start.bottom, PALETTES.sunset_end.bottom, t)
-      };
-    }
+    if(nm>=p.fajr&&nm<p.sunrise)return{ph:"dawn",t:(nm-p.fajr)/(p.sunrise-p.fajr)};
+    if(nm>=p.maghrib&&nm<p.isha)return{ph:"sunset",t:(nm-p.maghrib)/(p.isha-p.maghrib)};
+    return{ph:"day",t:(nm-p.sunrise)/(p.maghrib-p.sunrise)};
   }
 
-  // ---- Draw Gradient Background ----
-  function drawBackground(colors) {
-    const grad = ctx.createLinearGradient(0, 0, 0, H);
-    grad.addColorStop(0,    rgba(colors.top,    1));
-    grad.addColorStop(0.45, rgba(colors.mid,    1));
-    grad.addColorStop(1,    rgba(colors.bottom, 1));
-    ctx.fillStyle = grad;
-    ctx.fillRect(0, 0, W, H);
-  }
+  let tick=0;
+  function draw(){
+    tick++;cx.clearRect(0,0,W,H);
+    const{ph,t}=getPhase();
+    drawBG(getColors(ph,t));
 
-  // ---- Draw Stars ----
-  function drawStars(opacity, tick) {
-    if (opacity <= 0) return;
-    stars.forEach(s => {
-      const twinkle = 0.5 + 0.5 * Math.sin(tick * s.twinkleSpeed + s.twinkleOffset);
-      const a = s.baseOpacity * twinkle * opacity;
-      ctx.beginPath();
-      ctx.arc(s.x, s.y, s.r, 0, Math.PI * 2);
-      ctx.fillStyle = `rgba(255,255,240,${a})`;
-      ctx.fill();
-    });
-  }
-
-  // ---- Draw Moon ----
-  function drawMoon(opacity) {
-    if (opacity <= 0) return;
-    const mx = W * 0.82, my = H * 0.14;
-    // Glow
-    const glow = ctx.createRadialGradient(mx, my, 0, mx, my, 80);
-    glow.addColorStop(0, `rgba(220,220,180,${0.18 * opacity})`);
-    glow.addColorStop(1, "rgba(0,0,0,0)");
-    ctx.fillStyle = glow;
-    ctx.beginPath();
-    ctx.arc(mx, my, 80, 0, Math.PI * 2);
-    ctx.fill();
-    // Moon disc
-    ctx.beginPath();
-    ctx.arc(mx, my, 32, 0, Math.PI * 2);
-    ctx.fillStyle = `rgba(248,245,210,${0.95 * opacity})`;
-    ctx.fill();
-    // Crescent shadow
-    ctx.beginPath();
-    ctx.arc(mx + 12, my - 4, 26, 0, Math.PI * 2);
-    const moonColor = getSkyColors("night", 0);
-    ctx.fillStyle = rgba(moonColor.top, opacity * 0.95);
-    ctx.fill();
-  }
-
-  // ---- Draw Sun ----
-  function drawSun(x, y, radius, coreColor, glowColor, glowOpacity) {
-    // Outer atmospheric glow
-    const outerGlow = ctx.createRadialGradient(x, y, radius * 0.5, x, y, radius * 4);
-    outerGlow.addColorStop(0, `rgba(${glowColor},${glowOpacity * 0.5})`);
-    outerGlow.addColorStop(0.4, `rgba(${glowColor},${glowOpacity * 0.2})`);
-    outerGlow.addColorStop(1, "rgba(0,0,0,0)");
-    ctx.fillStyle = outerGlow;
-    ctx.beginPath();
-    ctx.arc(x, y, radius * 4, 0, Math.PI * 2);
-    ctx.fill();
-
-    // Inner glow
-    const innerGlow = ctx.createRadialGradient(x, y, 0, x, y, radius * 1.8);
-    innerGlow.addColorStop(0, `rgba(${coreColor},1)`);
-    innerGlow.addColorStop(0.5, `rgba(${glowColor},0.6)`);
-    innerGlow.addColorStop(1, "rgba(0,0,0,0)");
-    ctx.fillStyle = innerGlow;
-    ctx.beginPath();
-    ctx.arc(x, y, radius * 1.8, 0, Math.PI * 2);
-    ctx.fill();
-
-    // Core
-    ctx.beginPath();
-    ctx.arc(x, y, radius, 0, Math.PI * 2);
-    ctx.fillStyle = `rgb(${coreColor})`;
-    ctx.fill();
-  }
-
-  // ---- Horizon glow (dawn/sunset) ----
-  function drawHorizonGlow(color, strength) {
-    if (strength <= 0) return;
-    const grad = ctx.createRadialGradient(W / 2, H, 0, W / 2, H, H * 0.6);
-    grad.addColorStop(0, `rgba(${color},${strength})`);
-    grad.addColorStop(1, "rgba(0,0,0,0)");
-    ctx.fillStyle = grad;
-    ctx.fillRect(0, 0, W, H);
-  }
-
-  // ---- Main Draw ----
-  let tick = 0;
-  function draw() {
-    tick++;
-    ctx.clearRect(0, 0, W, H);
-
-    const { phase, t } = getPhaseAndProgress();
-    const colors = getSkyColors(phase, t);
-
-    drawBackground(colors);
-
-    // --- NIGHT ---
-    if (phase === "night") {
-      drawStars(1, tick);
-      drawMoon(1);
-      maybeAddShootingStar(phase, tick * 16);
-      updateShootingStars();
-      drawShootingStars();
-    }
-
-    // --- DAWN ---
-    if (phase === "dawn") {
-      // Stars fade out as dawn progresses
-      drawStars(1 - t, tick);
-      drawMoon(Math.max(0, 0.5 - t));
-
-      // Horizon glow
-      drawHorizonGlow("255,160,80", t * 0.6);
-
-      // Sun rising from below horizon to ~25% height
-      const sunY = H * (0.95 - t * 0.70);
-      const sunX = W * 0.42;
-      // Partially show sun before full rise
-      if (t > 0.3) {
-        ctx.save();
-        ctx.beginPath();
-        ctx.rect(0, 0, W, H);
-        ctx.clip();
-        drawSun(sunX, sunY, 28, "255,220,140", "255,160,60", 0.5 * t);
-        ctx.restore();
-      }
-
-      // Clouds tinted warm
-      updateClouds();
-      clouds.forEach(c => {
-        const cc = {...c, opacity: c.opacity * 0.7};
-        drawCloud(cc, `rgba(255,${Math.round(150 + t*70)},${Math.round(100 + t*80)},1)`);
+    if(ph==="night"){
+      stars.forEach(s=>{
+        const tw=.5+.5*Math.sin(tick*s.ts+s.to);
+        cx.globalAlpha=s.op*tw;cx.fillStyle=`rgb(${s.col})`;
+        cx.beginPath();cx.arc(s.x,s.y,s.r,0,Math.PI*2);cx.fill();
       });
-
-      maybeAddShootingStar(phase, tick * 16);
-      updateShootingStars();
-      drawShootingStars();
+      cx.globalAlpha=1;drawMoon(1);
+      maybeShoot(tick*16.67);tickShs();drawShs();
     }
-
-    // --- DAY ---
-    if (phase === "day") {
-      // Sun arc: rises left-center, peaks top-center, sets right-center
-      const angle = Math.PI + t * Math.PI; // π → 2π (left to right arc)
-      const arcR = H * 0.62;
-      const sunX = W * 0.5 + Math.cos(angle) * W * 0.38;
-      const sunY = H * 0.5 + Math.sin(angle) * arcR * 0.55;
-      const clampedY = Math.max(H * 0.05, Math.min(H * 0.85, sunY));
-
-      drawSun(sunX, clampedY, 38, "255,248,200", "255,230,120", 0.4);
-
-      updateClouds();
-      clouds.forEach(c => drawCloud(c, "rgba(255,255,255,1)"));
-    }
-
-    // --- SUNSET ---
-    if (phase === "sunset") {
-      // Horizon warm glow
-      drawHorizonGlow("255,130,40", 0.4 + t * 0.3);
-
-      // Sun descending to horizon
-      const sunY = H * (0.25 + t * 0.65);
-      const sunX = W * 0.5 + (1 - t) * W * 0.15;
-
-      if (sunY < H * 0.92) {
-        drawSun(sunX, sunY, 36, "255,180,60", "255,100,30", 0.5);
-      }
-
-      // Clouds tinted orange/purple
-      updateClouds();
-      clouds.forEach(c => {
-        const r = Math.round(220 + (1-t) * 35);
-        const g = Math.round(100 - t * 60);
-        const b = Math.round(60 + t * 80);
-        drawCloud(c, `rgba(${r},${g},${b},1)`);
+    if(ph==="dawn"){
+      const sa=Math.max(0,1-t*1.4);
+      stars.forEach(s=>{
+        const tw=.5+.5*Math.sin(tick*s.ts+s.to);
+        cx.globalAlpha=s.op*tw*sa;cx.fillStyle=`rgb(${s.col})`;
+        cx.beginPath();cx.arc(s.x,s.y,s.r,0,Math.PI*2);cx.fill();
       });
-
-      // Stars start appearing late sunset
-      if (t > 0.7) drawStars((t - 0.7) / 0.3 * 0.4, tick);
+      cx.globalAlpha=1;drawMoon(Math.max(0,.55-t*1.2));
+      drawHorizon(255,150,70,t*.65);
+      if(t>.25) drawSun(W*.44,H*(.98-t*.72),22,"255,225,140","255,165,55",t*.72);
+      tickClouds();clouds.forEach(c=>drawCloud(c,255,Math.round(145+t*70),Math.round(95+t*75)));
+      if(t<.4){maybeShoot(tick*16.67);tickShs();drawShs();}
     }
+    if(ph==="day"){
+      const ang=Math.PI+t*Math.PI;
+      const sx=W*.5+Math.cos(ang)*W*.38;
+      const sy=Math.max(H*.06,Math.min(H*.82,H*.5+Math.sin(ang)*H*.55));
+      drawSun(sx,sy,36,"255,250,210","255,235,130",.45);
+      tickClouds();clouds.forEach(c=>drawCloud(c,248,252,255));
+    }
+    if(ph==="sunset"){
+      drawHorizon(255,125,38,.44+t*.32);
+      const sx=W*.5+(1-t)*W*.12,sy=H*(.22+t*.68);
+      if(sy<H*.93)drawSun(sx,sy,34,"255,185,65","255,105,30",.55);
+      tickClouds();
+      clouds.forEach(c=>{
+        const r=Math.round(225+(1-t)*28),g=Math.round(98-t*65),b=Math.round(55+t*90);
+        drawCloud(c,r,g,b);
+      });
+      if(t>.65){
+        const sa=(t-.65)/.35*.45;
+        stars.forEach(s=>{
+          const tw=.5+.5*Math.sin(tick*s.ts+s.to);
+          cx.globalAlpha=s.op*tw*sa;cx.fillStyle=`rgb(${s.col})`;
+          cx.beginPath();cx.arc(s.x,s.y,s.r,0,Math.PI*2);cx.fill();
+        });
+      }
+    }
+    cx.globalAlpha=1;
   }
 
-  function animate() {
-    draw();
-    requestAnimationFrame(animate);
-  }
-
-  // Init
-  resize();
-  generateClouds();
-  animate();
-
+  function resize(){W=cv.width=window.innerWidth;H=cv.height=window.innerHeight;genStars();genClouds();}
+  window.addEventListener("resize",resize);resize();
+  (function loop(){draw();requestAnimationFrame(loop);})();
 })();
 
 
-/* ===================================================
-   GEOLOCATION — Smart Cache (Cookie + localStorage)
-   Requests GPS only once; re-uses stored coords for
-   30 days before asking again.
-   =================================================== */
-
-const GeoCache = (() => {
-  const COOKIE_KEY  = 'userGeo';
-  const LS_KEY      = 'userGeo';
-  const TTL_DAYS    = 30;
-  const TTL_MS      = TTL_DAYS * 24 * 60 * 60 * 1000;
-
-  /* ---- Cookie helpers ---- */
-  function setCookie(name, value, ms) {
-    const expires = new Date(Date.now() + ms).toUTCString();
-    document.cookie = `${name}=${encodeURIComponent(value)};expires=${expires};path=/;SameSite=Lax`;
+/* ════════════════════════════════════════
+   GEOLOCATION  — Smart Cache 30 days
+════════════════════════════════════════ */
+const GeoCache=(()=>{
+  const K='userGeo',TTL=30*864e5;
+  const sc=(n,v,ms)=>{document.cookie=`${n}=${encodeURIComponent(v)};expires=${new Date(Date.now()+ms).toUTCString()};path=/;SameSite=Lax`;};
+  const gc=n=>{const m=document.cookie.split('; ').find(r=>r.startsWith(n+'='));return m?decodeURIComponent(m.split('=')[1]):null;};
+  const dc=n=>{document.cookie=`${n}=;expires=Thu, 01 Jan 1970 00:00:00 UTC;path=/`;};
+  function load(){
+    try{
+      const raw=gc(K)||localStorage.getItem(K);if(!raw)return null;
+      const d=JSON.parse(raw);if(!d?.lat||!d?.lon||!d?.ts)return null;
+      if(Date.now()-d.ts>TTL){dc(K);localStorage.removeItem(K);return null;}
+      return{lat:d.lat,lon:d.lon};
+    }catch{return null;}
   }
-
-  function getCookie(name) {
-    const match = document.cookie
-      .split('; ')
-      .find(row => row.startsWith(name + '='));
-    return match ? decodeURIComponent(match.split('=')[1]) : null;
+  function save(lat,lon){
+    const p=JSON.stringify({lat,lon,ts:Date.now()});
+    try{sc(K,p,TTL);}catch{}try{localStorage.setItem(K,p);}catch{}
   }
-
-  function deleteCookie(name) {
-    document.cookie = `${name}=;expires=Thu, 01 Jan 1970 00:00:00 UTC;path=/`;
-  }
-
-  /* ---- Read stored location ---- */
-  function load() {
-    try {
-      // Try cookie first, fall back to localStorage
-      const raw = getCookie(COOKIE_KEY) || localStorage.getItem(LS_KEY);
-      if (!raw) return null;
-
-      const data = JSON.parse(raw);
-      if (!data || !data.lat || !data.lon || !data.ts) return null;
-
-      // Expire after 30 days
-      if (Date.now() - data.ts > TTL_MS) {
-        deleteCookie(COOKIE_KEY);
-        localStorage.removeItem(LS_KEY);
-        return null;
-      }
-
-      return { lat: data.lat, lon: data.lon };
-    } catch {
-      return null;
-    }
-  }
-
-  /* ---- Write location to both storages ---- */
-  function save(lat, lon) {
-    const payload = JSON.stringify({ lat, lon, ts: Date.now() });
-    try { setCookie(COOKIE_KEY, payload, TTL_MS); } catch {}
-    try { localStorage.setItem(LS_KEY, payload); } catch {}
-  }
-
-  /* ---- Public: initialise location flow ---- */
-  function init(onSuccess, onDenied) {
-    // Use cached coords if still valid
-    const cached = load();
-    if (cached) {
-      onSuccess(cached.lat, cached.lon, true /* fromCache */);
-      return;
-    }
-
-    // No cache — request from browser
-    if (!navigator.geolocation) {
-      onDenied('unsupported');
-      return;
-    }
-
+  function init(ok,fail){
+    const c=load();if(c){ok(c.lat,c.lon);return;}
+    if(!navigator.geolocation){fail('unsupported');return;}
     navigator.geolocation.getCurrentPosition(
-      pos => {
-        const lat = pos.coords.latitude;
-        const lon = pos.coords.longitude;
-        save(lat, lon);
-        onSuccess(lat, lon, false /* fresh */);
-      },
-      err => {
-        // PERMISSION_DENIED = 1, POSITION_UNAVAILABLE = 2, TIMEOUT = 3
-        onDenied(err.code);
-      },
-      { enableHighAccuracy: true, timeout: 10000, maximumAge: 0 }
+      p=>{save(p.coords.latitude,p.coords.longitude);ok(p.coords.latitude,p.coords.longitude);},
+      e=>fail(e.code),{enableHighAccuracy:true,timeout:10000,maximumAge:0}
     );
   }
-
-  return { init };
+  return{init};
 })();
 
-/* ---- Boot location ---- */
 GeoCache.init(
-  (lat, lon, fromCache) => {
-    reverseGeocode(lat, lon);
-    getPrayerTimes(lat, lon);
-  },
-  (reason) => {
-    const msg = reason === 1 || reason === 'denied'
-      ? 'يرجى السماح بالوصول إلى موقعك'
-      : reason === 'unsupported'
-        ? 'المتصفح لا يدعم تحديد الموقع'
-        : 'تعذّر تحديد الموقع، حاول مجدداً';
-    document.getElementById('locationText').innerText = msg;
-  }
+  (lat,lon)=>{reverseGeocode(lat,lon);getPrayerTimes(lat,lon);},
+  r=>{document.getElementById('locationText').innerText=
+    r===1?'يرجى السماح بالوصول إلى موقعك':r==='unsupported'?'المتصفح لا يدعم تحديد الموقع':'تعذّر تحديد الموقع';}
 );
 
-function reverseGeocode(lat, lon) {
+function reverseGeocode(lat,lon){
   fetch(`https://nominatim.openstreetmap.org/reverse?format=json&lat=${lat}&lon=${lon}`)
-    .then(r => r.json())
-    .then(d => {
-      const city = d.address.city || d.address.town || d.address.village || 'غير معروف';
-      document.getElementById('locationText').innerText = `موقعك: ${city}`;
-    })
-    .catch(() => {
-      document.getElementById('locationText').innerText = 'موقعك: غير معروف';
-    });
+    .then(r=>r.json())
+    .then(d=>{document.getElementById('locationText').innerText=d.address.city||d.address.town||d.address.village||'غير معروف';})
+    .catch(()=>{document.getElementById('locationText').innerText='غير معروف';});
 }
 
-/* ===== مواقيت ===== */
-let countdownInterval;
+
+/* ════════════════════════════════════════
+   PRAYER TIMES
+════════════════════════════════════════ */
+let cdInt,storedT=null;
+const PN={Fajr:'الفجر',Dhuhr:'الظهر',Asr:'العصر',Maghrib:'المغرب',Isha:'العشاء'};
+const PI={Fajr:'🌙',Dhuhr:'☀️',Asr:'🌤️',Maghrib:'🌅',Isha:'🌃'};
 
 function getPrayerTimes(lat,lon){
   fetch(`https://api.aladhan.com/v1/timings?latitude=${lat}&longitude=${lon}&method=5`)
-  .then(r=>r.json())
-  .then(d=>{
-    let t=d.data.timings;
-
-    // Feed prayer times to sky engine
-    if(window._setPrayerMinutes) window._setPrayerMinutes(t);
-
-    document.getElementById("prayers").innerHTML=`
-      <div class="prayer-time"><span>الفجر</span><span>${t.Fajr}</span></div>
-      <div class="prayer-time"><span>الظهر</span><span>${t.Dhuhr}</span></div>
-      <div class="prayer-time"><span>العصر</span><span>${t.Asr}</span></div>
-      <div class="prayer-time"><span>المغرب</span><span>${t.Maghrib}</span></div>
-      <div class="prayer-time"><span>العشاء</span><span>${t.Isha}</span></div>
-    `;
-
-    calculateNextPrayer(t);
-  });
+    .then(r=>r.json()).then(d=>{
+      const t=d.data.timings;storedT=t;
+      if(window._setPrayerMinutes)window._setPrayerMinutes(t);
+      renderPrayers(t);calculateNextPrayer(t);
+    });
 }
 
+function getActive(times){
+  const now=new Date(),nm=now.getHours()*60+now.getMinutes();
+  const keys=["Fajr","Dhuhr","Asr","Maghrib","Isha"];
+  let a=keys[keys.length-1];
+  keys.forEach(k=>{const[h,m]=times[k].split(":").map(Number);if(nm>=h*60+m)a=k;});
+  return a;
+}
+
+function renderPrayers(times){
+  const act=getActive(times);
+  document.getElementById("prayers").innerHTML=
+    ["Fajr","Dhuhr","Asr","Maghrib","Isha"].map(k=>`
+      <div class="prayer-row ${k===act?'active':''}">
+        <div class="pname"><span class="pip"></span><span>${PI[k]}</span><span>${PN[k]}</span></div>
+        <span class="ptime">${times[k]}</span>
+      </div>`).join('');
+}
+setInterval(()=>{if(storedT)renderPrayers(storedT);},60000);
+
 function calculateNextPrayer(times){
-  if(countdownInterval) clearInterval(countdownInterval);
-  let prayers=["Fajr","Dhuhr","Asr","Maghrib","Isha"];
-  let now=new Date();
-  let next=null;
-  for(let p of prayers){
-    let [h,m]=times[p].split(":");
-    let pt=new Date();
-    pt.setHours(h,m,0);
-    if(pt>now){next=pt;break;}
-  }
-  if(!next){
-    let [h,m]=times["Fajr"].split(":");
-    next=new Date();
-    next.setDate(next.getDate()+1);
-    next.setHours(h,m,0);
-  }
-  countdownInterval=setInterval(()=>{
-    let diff=next-new Date();
-    if(diff<=0){
-      clearInterval(countdownInterval);
-      document.getElementById("countdownBar").innerText="حان وقت الصلاة 🕌";
-      return;
+  if(cdInt)clearInterval(cdInt);
+  const keys=["Fajr","Dhuhr","Asr","Maghrib","Isha"];
+  function getNext(){
+    const now=new Date();
+    for(const p of keys){
+      const[h,m]=times[p].split(":");const pt=new Date();pt.setHours(h,m,0,0);
+      if(pt>now)return{name:PN[p],time:pt};
     }
-    let h=Math.floor(diff/3600000);
-    let m=Math.floor((diff%3600000)/60000);
-    let s=Math.floor((diff%60000)/1000);
-    document.getElementById("countdownBar").innerText=`متبقي ${h}س ${m}د ${s}ث`;
+    const[h,m]=times["Fajr"].split(":");const pt=new Date();pt.setDate(pt.getDate()+1);pt.setHours(h,m,0,0);
+    return{name:PN["Fajr"],time:pt};
+  }
+  const{name,time:next}=getNext();
+  cdInt=setInterval(()=>{
+    const diff=next-new Date();
+    if(diff<=0){clearInterval(cdInt);document.getElementById("countdownBar").innerText="حان وقت الصلاة 🕌";return;}
+    const h=Math.floor(diff/3600000),m=Math.floor((diff%3600000)/60000),s=Math.floor((diff%60000)/1000);
+    document.getElementById("countdownBar").innerText=`${name} — متبقي ${h}س ${m}د ${s}ث`;
   },1000);
 }
 
-/* ===== قرآن ===== */
-let currentSurah=1;
-let audio=document.getElementById("audioPlayer");
-let playBtn=document.getElementById("playBtn");
-let surahSelect=document.getElementById("surahSelect");
-let reciterSelect=document.getElementById("reciterSelect");
 
-fetch("https://api.alquran.cloud/v1/surah")
-.then(r=>r.json())
-.then(d=>{
+/* ════════════════════════════════════════
+   QURAN PLAYER
+════════════════════════════════════════ */
+let curSurah=1;
+const aud=document.getElementById("audioPlayer");
+const playBtn=document.getElementById("playBtn");
+const surahSel=document.getElementById("surahSelect");
+const recSel=document.getElementById("reciterSelect");
+let surahNames={};
+const RNAMES={'ar.alafasy':'مشاري العفاسي','ar.abdulbasitmurattal':'عبدالباسط عبدالصمد','ar.faresabbad':'فارس عباد'};
+
+fetch("https://api.alquran.cloud/v1/surah").then(r=>r.json()).then(d=>{
   d.data.forEach(x=>{
-    let o=document.createElement("option");
-    o.value=x.number;
-    o.textContent=x.name;
-    surahSelect.appendChild(o);
+    surahNames[x.number]=x.name;
+    const o=document.createElement("option");o.value=x.number;o.textContent=x.name;surahSel.appendChild(o);
   });
+  if(localStorage.getItem("lastSurah"))surahSel.value=localStorage.getItem("lastSurah");
+  if(localStorage.getItem("lastReciter"))recSel.value=localStorage.getItem("lastReciter");
+  updateNP();
 });
 
+function updateNP(){
+  document.getElementById("npSurah").textContent=surahNames[surahSel.value]||'...';
+  document.getElementById("npRec").textContent=RNAMES[recSel.value]||recSel.value;
+}
 function loadSurah(){
-  let surah=surahSelect.value;
-  let reciter=reciterSelect.value;
-  audio.src=`https://cdn.islamic.network/quran/audio-surah/128/${reciter}/${surah}.mp3`;
-  audio.load();
-  currentSurah=parseInt(surah);
+  aud.src=`https://cdn.islamic.network/quran/audio-surah/128/${recSel.value}/${surahSel.value}.mp3`;
+  aud.load();curSurah=parseInt(surahSel.value);updateNP();
 }
-
 function togglePlay(){
-  if(audio.src===""){
-    loadSurah();
-    audio.play();
-    playBtn.innerText="⏸ إيقاف";
-    return;
-  }
-  if(audio.paused){
-    audio.play();
-    playBtn.innerText="⏸ إيقاف";
-  }else{
-    audio.pause();
-    playBtn.innerText="▶ تشغيل";
-  }
+  if(!aud.src||aud.src===''){loadSurah();aud.play();playBtn.textContent='⏸';return;}
+  if(aud.paused){aud.play();playBtn.textContent='⏸';}else{aud.pause();playBtn.textContent='▶';}
 }
-
-surahSelect.onchange=()=>{loadSurah();audio.play();playBtn.innerText="⏸ إيقاف";}
-reciterSelect.onchange=()=>{loadSurah();audio.play();playBtn.innerText="⏸ إيقاف";}
-
-audio.addEventListener("ended",function(){
-  if(currentSurah<114){
-    currentSurah++;
-    surahSelect.value=currentSurah;
-    loadSurah();
-    audio.play();
-  }
-});
-
-audio.ontimeupdate=function(){
-  if(!audio.duration)return;
-  let percent=(audio.currentTime/audio.duration)*100;
-  document.getElementById("progressBar").style.width=percent+"%";
-  document.getElementById("currentTime").innerText=formatTime(audio.currentTime);
-  document.getElementById("duration").innerText=formatTime(audio.duration);
-}
-
+document.getElementById("prevBtn").onclick=()=>{if(curSurah>1){surahSel.value=--curSurah;loadSurah();aud.play();playBtn.textContent='⏸';}};
+document.getElementById("nextBtn").onclick=()=>{if(curSurah<114){surahSel.value=++curSurah;loadSurah();aud.play();playBtn.textContent='⏸';}};
+surahSel.onchange=()=>{localStorage.setItem("lastSurah",surahSel.value);loadSurah();aud.play();playBtn.textContent='⏸';};
+recSel.onchange=()=>{localStorage.setItem("lastReciter",recSel.value);loadSurah();aud.play();playBtn.textContent='⏸';};
+aud.addEventListener("ended",()=>{if(curSurah<114){surahSel.value=++curSurah;loadSurah();aud.play();}});
+aud.ontimeupdate=function(){
+  if(!aud.duration)return;
+  document.getElementById("progressBar").style.width=(aud.currentTime/aud.duration*100)+"%";
+  document.getElementById("currentTime").textContent=fmt(aud.currentTime);
+  document.getElementById("duration").textContent=fmt(aud.duration);
+  localStorage.setItem("lastTime",aud.currentTime);
+};
 function seekAudio(e){
-  let width=e.currentTarget.clientWidth;
-  let clickX=e.offsetX;
-  audio.currentTime=(clickX/width)*audio.duration;
+  const rect=e.currentTarget.getBoundingClientRect();
+  if(aud.duration)aud.currentTime=((e.clientX-rect.left)/rect.width)*aud.duration;
 }
+function fmt(s){if(isNaN(s))return"0:00";const m=Math.floor(s/60),sec=Math.floor(s%60);return`${m}:${sec<10?'0':''}${sec}`;}
+aud.addEventListener("loadedmetadata",()=>{const t=parseFloat(localStorage.getItem("lastTime"));if(t&&!isNaN(t))aud.currentTime=t;});
 
-function formatTime(sec){
-  if(isNaN(sec)) return "0:00";
-  let m=Math.floor(sec/60);
-  let s=Math.floor(sec%60);
-  if(s<10)s="0"+s;
-  return m+":"+s;
-}
 
-/* ===== سبحة ===== */
-let tasbeehCounter=localStorage.getItem("tasbeeh")||0;
-document.getElementById("tasbeehCount").innerText=tasbeehCounter;
+/* ════════════════════════════════════════
+   TASBEEH
+════════════════════════════════════════ */
+let tcnt=parseInt(localStorage.getItem("tasbeeh"))||0;
+document.getElementById("tasbeehCount").textContent=tcnt;
+const pulse=document.getElementById("pulseRing");
+const toast=document.getElementById("milestoneToast");
+const MS=[33,66,99,100,200,300,500,1000];
 
 function tasbeehClick(){
-  tasbeehCounter++;
-  localStorage.setItem("tasbeeh",tasbeehCounter);
-  document.getElementById("tasbeehCount").innerText=tasbeehCounter;
-  if(navigator.vibrate)navigator.vibrate(40);
+  tcnt++;localStorage.setItem("tasbeeh",tcnt);
+  document.getElementById("tasbeehCount").textContent=tcnt;
+  if(navigator.vibrate)navigator.vibrate(28);
+  pulse.classList.remove("pop");void pulse.offsetWidth;pulse.classList.add("pop");
+  if(MS.includes(tcnt)){
+    toast.textContent=`🎉 ${tcnt} سبحة!`;
+    toast.classList.remove("show");void toast.offsetWidth;toast.classList.add("show");
+  }
 }
-
-/* ===== حفظ آخر تشغيل ===== */
-document.addEventListener("DOMContentLoaded",function(){
-  const audio=document.getElementById("audioPlayer");
-  const surahSelect=document.getElementById("surahSelect");
-  const reciterSelect=document.getElementById("reciterSelect");
-
-  if(localStorage.getItem("lastSurah")) surahSelect.value=localStorage.getItem("lastSurah");
-  if(localStorage.getItem("lastReciter")) reciterSelect.value=localStorage.getItem("lastReciter");
-
-  surahSelect.addEventListener("change",()=>{localStorage.setItem("lastSurah",surahSelect.value);});
-  reciterSelect.addEventListener("change",()=>{localStorage.setItem("lastReciter",reciterSelect.value);});
-
-  audio.addEventListener("timeupdate",()=>{localStorage.setItem("lastTime",audio.currentTime);});
-  audio.addEventListener("loadedmetadata",()=>{
-    if(localStorage.getItem("lastTime")) audio.currentTime=localStorage.getItem("lastTime");
-  });
-});
-
+function resetTasbeeh(){tcnt=0;localStorage.setItem("tasbeeh",0);document.getElementById("tasbeehCount").textContent=0;}
 </script>
 </body>
-  </html>
+</html>
